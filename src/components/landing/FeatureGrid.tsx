@@ -5,25 +5,25 @@ const features = [
     icon: Cpu,
     title: "Gemini 1.5 Pro Context.",
     description: "We digest your entire repository in seconds, not pieces.",
-    gradient: "from-purple to-purple/50",
-    iconBg: "bg-purple/10",
-    iconColor: "text-purple",
+    iconBg: "gradient-bg",
+    iconColor: "text-white",
+    glowColor: "shadow-purple/30",
   },
   {
     icon: Zap,
     title: "Solana Blinks.",
     description: "Micro-transactions right inside GitHub. Pay cents, not subscriptions.",
-    gradient: "from-cyan to-cyan/50",
-    iconBg: "bg-cyan/10",
+    iconBg: "bg-cyan/20 border border-cyan/30",
     iconColor: "text-cyan",
+    glowColor: "shadow-cyan/20",
   },
   {
     icon: GitBranch,
     title: "Mermaid.js Visualization.",
     description: "Turn spaghetti code into beautiful, interactive flowcharts instantly.",
-    gradient: "from-teal to-teal/50",
-    iconBg: "bg-teal/10",
+    iconBg: "bg-teal/20 border border-teal/30",
     iconColor: "text-teal",
+    glowColor: "shadow-teal/20",
   },
 ];
 
@@ -60,9 +60,9 @@ interface FeatureCardProps {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   description: string;
-  gradient: string;
   iconBg: string;
   iconColor: string;
+  glowColor: string;
   index: number;
 }
 
@@ -72,19 +72,20 @@ const FeatureCard = ({
   description,
   iconBg,
   iconColor,
+  glowColor,
   index,
 }: FeatureCardProps) => {
   return (
     <div
-      className="group relative p-8 rounded-3xl bg-card border border-border card-shadow hover:elevated-shadow transition-all duration-500 hover:-translate-y-1"
+      className="group relative p-8 rounded-3xl bg-card border border-border card-shadow hover:elevated-shadow transition-all duration-500 hover:-translate-y-2"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Hover gradient overlay */}
-      <div className="absolute inset-0 rounded-3xl gradient-bg opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500" />
+      <div className="absolute inset-0 rounded-3xl gradient-bg opacity-0 group-hover:opacity-[0.05] transition-opacity duration-500" />
       
       {/* Icon */}
-      <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl ${iconBg} mb-6`}>
-        <Icon className={`w-7 h-7 ${iconColor}`} />
+      <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${iconBg} mb-6 shadow-lg ${glowColor}`}>
+        <Icon className={`w-8 h-8 ${iconColor}`} />
       </div>
 
       {/* Content */}
@@ -92,7 +93,7 @@ const FeatureCard = ({
       <p className="text-muted-foreground leading-relaxed">{description}</p>
 
       {/* Decorative element */}
-      <div className="absolute bottom-4 right-4 w-20 h-20 rounded-full gradient-bg opacity-0 group-hover:opacity-5 blur-2xl transition-all duration-500" />
+      <div className="absolute bottom-4 right-4 w-24 h-24 rounded-full gradient-bg opacity-0 group-hover:opacity-10 blur-2xl transition-all duration-500" />
     </div>
   );
 };

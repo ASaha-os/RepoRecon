@@ -1,26 +1,48 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { HeroVisualization } from "./HeroVisualization";
+import { PricingModal } from "./PricingModal";
+import { toast } from "sonner";
 
 export const HeroSection = () => {
   const [repoUrl, setRepoUrl] = useState("");
+  const [showPricing, setShowPricing] = useState(false);
+
+  const handleAnalyzeClick = () => {
+    if (!repoUrl.trim()) {
+      toast.error("Please enter a GitHub repository URL");
+      return;
+    }
+    setShowPricing(true);
+  };
+
+  const handleAnalyze = (tier: "basic" | "premium") => {
+    toast.success(`Starting ${tier} analysis for ${repoUrl}`, {
+      description: tier === "premium" 
+        ? "Generating diagrams and full architecture review..." 
+        : "Generating text-based code review...",
+    });
+    // Here you would call your actual analysis function
+    console.log("Analyzing:", repoUrl, "Tier:", tier);
+  };
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-24 overflow-hidden">
-      {/* Background gradient orbs */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-purple/10 rounded-full blur-[120px] animate-pulse-glow" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-cyan/10 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
+      {/* Enhanced background gradient orbs */}
+      <div className="absolute top-20 left-1/4 w-[700px] h-[700px] bg-purple/20 dark:bg-purple/30 rounded-full blur-[150px] animate-pulse-glow" />
+      <div className="absolute bottom-20 right-1/4 w-[600px] h-[600px] bg-cyan/20 dark:bg-cyan/25 rounded-full blur-[130px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-teal/10 dark:bg-teal/15 rounded-full blur-[120px] animate-pulse-glow" style={{ animationDelay: "3s" }} />
       
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         {/* Badge */}
         <div 
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 opacity-0 animate-fade-up"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-purple/20 mb-8 opacity-0 animate-fade-up"
           style={{ animationDelay: "0.1s" }}
         >
-          <span className="w-2 h-2 rounded-full gradient-bg animate-pulse" />
-          <span className="text-sm font-medium text-muted-foreground">Powered by Gemini 1.5 Pro & Solana</span>
+          <Sparkles className="w-4 h-4 text-purple animate-pulse" />
+          <span className="text-sm font-medium text-foreground">Powered by Gemini 1.5 Pro & Solana</span>
         </div>
 
         {/* Main headline */}
@@ -53,15 +75,27 @@ export const HeroSection = () => {
               placeholder="Paste GitHub URL here..."
               value={repoUrl}
               onChange={(e) => setRepoUrl(e.target.value)}
-              className="pr-4 w-full elevated-shadow"
+              className="pr-4 w-full elevated-shadow border-purple/20 focus:border-purple/40"
             />
           </div>
-          <Button variant="gradient" size="xl" className="w-full sm:w-auto group">
+          <Button 
+            variant="gradient" 
+            size="xl" 
+            className="w-full sm:w-auto group shadow-lg shadow-purple/25"
+            onClick={handleAnalyzeClick}
+          >
             Analyze Repo
-            <span className="text-white/80 font-normal">(0.01 SOL)</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
+
+        {/* Pricing hint */}
+        <p 
+          className="text-sm text-muted-foreground mb-12 opacity-0 animate-fade-up"
+          style={{ animationDelay: "0.45s" }}
+        >
+          Starting at <span className="font-semibold gradient-text">0.01 SOL</span> for basic review • <span className="font-semibold gradient-text">0.05 SOL</span> for full diagrams
+        </p>
 
         {/* Hero Visualization */}
         <div 
@@ -71,6 +105,13 @@ export const HeroSection = () => {
           <HeroVisualization />
         </div>
       </div>
+
+      <PricingModal 
+        open={showPricing} 
+        onOpenChange={setShowPricing}
+        repoUrl={repoUrl}
+        onAnalyze={handleAnalyze}
+      />
     </section>
   );
 };

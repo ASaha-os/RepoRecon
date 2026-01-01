@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const Header = () => {
   return (
@@ -7,7 +8,7 @@ export const Header = () => {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center shadow-lg shadow-purple/20">
             <span className="text-white font-bold text-sm">R</span>
           </div>
           <span className="text-foreground font-semibold text-lg">RepoRecon</span>
@@ -27,10 +28,13 @@ export const Header = () => {
           </a>
         </nav>
 
-        {/* CTA */}
-        <Button variant="gradient" size="sm">
-          Get Started
-        </Button>
+        {/* Right side */}
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Button variant="gradient" size="sm" className="shadow-lg shadow-purple/20">
+            Get Started
+          </Button>
+        </div>
       </div>
     </header>
   );
