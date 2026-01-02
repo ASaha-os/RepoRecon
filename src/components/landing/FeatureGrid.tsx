@@ -11,8 +11,8 @@ const features = [
   },
   {
     icon: Zap,
-    title: "Solana Blinks.",
-    description: "Micro-transactions right inside GitHub. Pay cents, not subscriptions.",
+    title: "Lightning Fast Analysis.",
+    description: "Get comprehensive code reviews and insights in seconds, completely free.",
     iconBg: "bg-cyan/20 border border-cyan/30",
     iconColor: "text-cyan",
     glowColor: "shadow-cyan/20",
