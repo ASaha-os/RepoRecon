@@ -1,4 +1,5 @@
 import { Cpu, Zap, GitBranch } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   {
@@ -27,15 +28,43 @@ const features = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
 export const FeatureGrid = () => {
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
+    <section id="features" className="relative py-32 px-6 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple/5 rounded-full blur-[150px]" />
       
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Section header */}
-        <div className="text-center mb-20">
+        <motion.div 
+          className="text-center mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-6">
             The power of{" "}
             <span className="gradient-text">2 million tokens.</span>
@@ -43,14 +72,20 @@ export const FeatureGrid = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Experience the full context window advantage. No chunking, no loss of understanding.
           </p>
-        </div>
+        </motion.div>
 
         {/* Feature cards grid */}
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-          {features.map((feature, index) => (
-            <FeatureCard key={feature.title} {...feature} index={index} />
+        <motion.div 
+          className="grid md:grid-cols-3 gap-6 lg:gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
+          {features.map((feature) => (
+            <FeatureCard key={feature.title} {...feature} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -63,7 +98,6 @@ interface FeatureCardProps {
   iconBg: string;
   iconColor: string;
   glowColor: string;
-  index: number;
 }
 
 const FeatureCard = ({
@@ -73,20 +107,24 @@ const FeatureCard = ({
   iconBg,
   iconColor,
   glowColor,
-  index,
 }: FeatureCardProps) => {
   return (
-    <div
-      className="group relative p-8 rounded-3xl bg-card border border-border card-shadow hover:elevated-shadow transition-all duration-500 hover:-translate-y-2"
-      style={{ animationDelay: `${index * 100}ms` }}
+    <motion.div
+      variants={itemVariants}
+      whileHover={{ y: -8, transition: { duration: 0.3 } }}
+      className="group relative p-8 rounded-3xl bg-card border border-border card-shadow hover:elevated-shadow transition-all duration-500"
     >
       {/* Hover gradient overlay */}
       <div className="absolute inset-0 rounded-3xl gradient-bg opacity-0 group-hover:opacity-[0.05] transition-opacity duration-500" />
       
       {/* Icon */}
-      <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${iconBg} mb-6 shadow-lg ${glowColor}`}>
+      <motion.div 
+        className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${iconBg} mb-6 shadow-lg ${glowColor}`}
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
         <Icon className={`w-8 h-8 ${iconColor}`} />
-      </div>
+      </motion.div>
 
       {/* Content */}
       <h3 className="text-xl font-semibold text-foreground mb-3">{title}</h3>
@@ -94,6 +132,6 @@ const FeatureCard = ({
 
       {/* Decorative element */}
       <div className="absolute bottom-4 right-4 w-24 h-24 rounded-full gradient-bg opacity-0 group-hover:opacity-10 blur-2xl transition-all duration-500" />
-    </div>
+    </motion.div>
   );
 };
