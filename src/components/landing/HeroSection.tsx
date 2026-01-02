@@ -3,29 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { HeroVisualization } from "./HeroVisualization";
-import { PricingModal } from "./PricingModal";
 import { toast } from "sonner";
 
 export const HeroSection = () => {
   const [repoUrl, setRepoUrl] = useState("");
-  const [showPricing, setShowPricing] = useState(false);
 
-  const handleAnalyzeClick = () => {
+  const handleAnalyze = () => {
     if (!repoUrl.trim()) {
       toast.error("Please enter a GitHub repository URL");
       return;
     }
-    setShowPricing(true);
-  };
-
-  const handleAnalyze = (tier: "basic" | "premium") => {
-    toast.success(`Starting ${tier} analysis for ${repoUrl}`, {
-      description: tier === "premium" 
-        ? "Generating diagrams and full architecture review..." 
-        : "Generating text-based code review...",
+    toast.success(`Starting deep analysis for ${repoUrl}`, {
+      description: "Generating comprehensive architecture review and diagrams...",
     });
-    // Here you would call your actual analysis function
-    console.log("Analyzing:", repoUrl, "Tier:", tier);
+    console.log("Analyzing:", repoUrl);
   };
 
   return (
@@ -42,7 +33,7 @@ export const HeroSection = () => {
           style={{ animationDelay: "0.1s" }}
         >
           <Sparkles className="w-4 h-4 text-purple animate-pulse" />
-          <span className="text-sm font-medium text-foreground">Powered by Gemini 1.5 Pro & Solana</span>
+          <span className="text-sm font-medium text-foreground">Powered by Gemini 1.5 Pro</span>
         </div>
 
         {/* Main headline */}
@@ -60,7 +51,7 @@ export const HeroSection = () => {
           className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 text-balance opacity-0 animate-fade-up"
           style={{ animationDelay: "0.3s" }}
         >
-          Instant GitHub repository analysis, architectural diagrams, and bug fixes powered by Gemini 1.5 Pro. Pay per insight with Solana.
+          Instant GitHub repository analysis, architectural diagrams, and bug fixes powered by Gemini 1.5 Pro. Free, unlimited, in-depth.
         </p>
 
         {/* CTA Input Group */}
@@ -82,20 +73,12 @@ export const HeroSection = () => {
             variant="gradient" 
             size="xl" 
             className="w-full sm:w-auto group shadow-lg shadow-purple/25"
-            onClick={handleAnalyzeClick}
+            onClick={handleAnalyze}
           >
             Analyze Repo
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
-
-        {/* Pricing hint */}
-        <p 
-          className="text-sm text-muted-foreground mb-12 opacity-0 animate-fade-up"
-          style={{ animationDelay: "0.45s" }}
-        >
-          Starting at <span className="font-semibold gradient-text">0.01 SOL</span> for basic review • <span className="font-semibold gradient-text">0.05 SOL</span> for full diagrams
-        </p>
 
         {/* Hero Visualization */}
         <div 
@@ -105,13 +88,6 @@ export const HeroSection = () => {
           <HeroVisualization />
         </div>
       </div>
-
-      <PricingModal 
-        open={showPricing} 
-        onOpenChange={setShowPricing}
-        repoUrl={repoUrl}
-        onAnalyze={handleAnalyze}
-      />
     </section>
   );
 };
