@@ -1,0 +1,23 @@
+# RepoRecon Backend
+*.py[cod]
+__pycache__/
+*.so
+.Python
+env/
+venv/
+.venv
+ENV/
+db.sqlite3
+.DS_Store
+.env
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
