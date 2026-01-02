@@ -16,6 +16,82 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
+def clean_readme_content(readme_text: str) -> str:
+    """
+    Strip fluff from README to keep only valuable text for LLM analysis.
+    Removes images, badges, license sections, and other non-essential content.
+    
+    Args:
+        readme_text: Raw README content
+        
+    Returns:
+        Cleaned README with only valuable text
+    """
+    text = readme_text
+    
+    # Remove HTML comments
+    text = re.sub(r'<!--.*?-->', '', text, flags=re.DOTALL)
+    
+    # Remove images: ![alt](url) and <img> tags
+    text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
+    text = re.sub(r'<img[^>]*/?>', '', text, flags=re.IGNORECASE)
+    
+    # Remove badges (common badge URLs)
+    text = re.sub(r'\[!\[.*?\]\(.*?\)\]\(.*?\)', '', text)  # [![badge](img)](link)
+    text = re.sub(r'https?://[^\s]*(?:badge|shield|img\.shields\.io|travis-ci|codecov|coveralls)[^\s\)]*', '', text, flags=re.IGNORECASE)
+    
+    # Remove license sections
+    text = re.sub(r'#+\s*(?:License|Licence|Legal|Copyright).*?(?=\n#|\Z)', '', text, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r'\*\*(?:License|Licence)\*\*.*?(?=\n\n|\n#|\Z)', '', text, flags=re.DOTALL | re.IGNORECASE)
+    
+    # Remove contributing/code of conduct sections
+    text = re.sub(r'#+\s*(?:Contributing|Code of Conduct|Contributors|Acknowledgements?).*?(?=\n#|\Z)', '', text, flags=re.DOTALL | re.IGNORECASE)
+    
+    # Remove sponsor/donation sections
+    text = re.sub(r'#+\s*(?:Sponsor|Donate|Support|Funding).*?(?=\n#|\Z)', '', text, flags=re.DOTALL | re.IGNORECASE)
+    
+    # Remove changelog sections
+    text = re.sub(r'#+\s*(?:Changelog|Release Notes|Version History).*?(?=\n#|\Z)', '', text, flags=re.DOTALL | re.IGNORECASE)
+    
+    # Remove HTML tags but keep content
+    text = re.sub(r'<(?:div|span|p|br|hr|table|tr|td|th|thead|tbody)[^>]*>', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'</(?:div|span|p|br|hr|table|tr|td|th|thead|tbody)>', '', text, flags=re.IGNORECASE)
+    
+    # Remove inline HTML attributes and style tags
+    text = re.sub(r'<style[^>]*>.*?</style>', '', text, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r'style="[^"]*"', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'align="[^"]*"', '', text, flags=re.IGNORECASE)
+    
+    # Remove excessive links but keep link text: [text](url) -> text
+    # Keep first few links, remove rest to save tokens
+    link_count = 0
+    def replace_link(match):
+        nonlocal link_count
+        link_count += 1
+        if link_count <= 5:  # Keep first 5 links intact
+            return match.group(0)
+        return match.group(1)  # Return just the text
+    text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', replace_link, text)
+    
+    # Remove empty markdown links
+    text = re.sub(r'\[\]\([^\)]*\)', '', text)
+    
+    # Remove horizontal rules
+    text = re.sub(r'\n[-*_]{3,}\n', '\n', text)
+    
+    # Collapse multiple blank lines to single
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    
+    # Remove leading/trailing whitespace from lines
+    lines = [line.strip() for line in text.split('\n')]
+    text = '\n'.join(lines)
+    
+    # Remove empty lines at start/end
+    text = text.strip()
+    
+    return text
+
+
 class GeminiAnalysisError(Exception):
     """Custom exception for Gemini analysis failures"""
     pass
@@ -127,11 +203,8 @@ def configure_gemini_model() -> Any:
     # Try Flash models in order of preference (newer versions first, then older)
     # Flash models have 10x higher rate limits than Pro models
     preferred_flash_models = [
-        'gemini-2.0-flash-exp',    # Latest experimental
-        'gemini-2.0-flash',        # Latest stable
-        'gemini-1.5-flash-002',   # Versioned
-        'gemini-1.5-flash',        # Standard
-        'gemini-1.5-flash-8b',     # 8B variant
+        'gemini-2.5-flash-lite-preview-09-2025',    # Latest experimental
+             # 8B variant
     ]
     
     # First, try any Flash models found in available list
@@ -180,7 +253,7 @@ def configure_gemini_model() -> Any:
 
 def parse_gemini_response(response_text: str) -> Dict[str, Any]:
     """
-    Parse Gemini response with error handling for hallucinations.
+    Parse Gemini response with error handling for hallucinations and truncation.
     Extracts JSON from the response even if wrapped in markdown or text.
     
     Args:
@@ -226,7 +299,6 @@ def parse_gemini_response(response_text: str) -> Dict[str, Any]:
             logger.debug(f'Direct JSON parse failed: {str(e)}')
         
         # Try extracting JSON from markdown code blocks (remove ```json or ```)
-        # Match both single-line and multi-line code blocks
         json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', text, re.DOTALL)
         if json_match:
             try:
@@ -237,123 +309,24 @@ def parse_gemini_response(response_text: str) -> Dict[str, Any]:
                 logger.debug(f'Markdown JSON parse failed: {str(e)}')
         
         # Try finding JSON object in response - handle incomplete/truncated JSON
-        # Find the first { and try to extract complete JSON
         first_brace = text.find('{')
         if first_brace != -1:
-            # Try to find the matching closing brace
             json_str = text[first_brace:]
             
-            # Count braces to find the end of the JSON object
-            brace_count = 0
-            in_string = False
-            escape_next = False
-            json_end = -1
-            
-            for i, char in enumerate(json_str):
-                if escape_next:
-                    escape_next = False
-                    continue
-                if char == '\\':
-                    escape_next = True
-                    continue
-                if char == '"' and not escape_next:
-                    in_string = not in_string
-                    continue
-                if not in_string:
-                    if char == '{':
-                        brace_count += 1
-                    elif char == '}':
-                        brace_count -= 1
-                        if brace_count == 0:
-                            json_end = i + 1
-                            break
-            
-            if json_end > 0:
-                json_str = json_str[:json_end]
-            else:
-                # JSON might be incomplete - try to close it
-                json_str = json_str.rstrip()
-                if not json_str.endswith('}'):
-                    # Try to close incomplete JSON
-                    if json_str.count('{') > json_str.count('}'):
-                        # Add missing closing braces
-                        missing = json_str.count('{') - json_str.count('}')
-                        # Try to close arrays and objects
-                        if json_str.rstrip().endswith(','):
-                            json_str = json_str.rstrip()[:-1]  # Remove trailing comma
-                        if '"' in json_str and not json_str.rstrip().endswith('"'):
-                            # Try to close incomplete string
-                            last_quote = json_str.rfind('"')
-                            if last_quote > 0:
-                                # Check if we're in a string
-                                before_quote = json_str[:last_quote]
-                                if before_quote.count('"') % 2 == 1:  # Odd number means we're in a string
-                                    json_str = json_str[:last_quote+1] + '"'
-                        # Add closing braces
-                        json_str += '}' * missing
-            
-            # Try to fix common JSON issues
-            json_str = re.sub(r',\s*}', '}', json_str)
-            json_str = re.sub(r',\s*]', ']', json_str)
-            json_str = re.sub(r',\s*$', '', json_str)  # Remove trailing comma at end
-            
+            # Try direct parse first
             try:
                 parsed = json.loads(json_str)
-                logger.debug('Successfully parsed JSON from extracted object')
-                return parsed
-            except json.JSONDecodeError as e:
-                logger.debug(f'Extracted JSON parse failed: {str(e)}')
-                logger.debug(f'Attempted to parse: {json_str[:300]}...')
-                
-                # Last resort: try to extract fields manually from incomplete JSON
-                try:
-                    result = {}
-                    # Extract summary
-                    summary_match = re.search(r'"summary"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', json_str)
-                    if summary_match:
-                        result['summary'] = summary_match.group(1).replace('\\"', '"')
-                    
-                    # Extract mermaid_code
-                    mermaid_match = re.search(r'"mermaid_code"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', json_str)
-                    if mermaid_match:
-                        result['mermaid_code'] = mermaid_match.group(1).replace('\\"', '"').replace('\\n', '\n')
-                    
-                    # Extract detected_issues array
-                    issues_match = re.search(r'"detected_issues"\s*:\s*\[(.*?)\]', json_str, re.DOTALL)
-                    if issues_match:
-                        issues_str = issues_match.group(1)
-                        issues = [i.strip().strip('"') for i in re.findall(r'"([^"]*)"', issues_str)]
-                        result['detected_issues'] = issues
-                    
-                    # Extract fix_recommendations array
-                    fixes_match = re.search(r'"fix_recommendations"\s*:\s*\[(.*?)\]', json_str, re.DOTALL)
-                    if fixes_match:
-                        fixes_str = fixes_match.group(1)
-                        fixes = [f.strip().strip('"') for f in re.findall(r'"([^"]*)"', fixes_str)]
-                        result['fix_recommendations'] = fixes
-                    
-                    if result:
-                        logger.info('Extracted partial JSON data manually')
-                        return result
-                except Exception as extract_error:
-                    logger.debug(f'Manual extraction also failed: {str(extract_error)}')
-        
-        # Last resort: try to find and fix common JSON issues
-        # Look for JSON-like structure and try to repair it
-        json_candidates = re.findall(r'\{[^{}]*\}', text, re.DOTALL)
-        for candidate in json_candidates:
-            try:
-                # Try to fix common issues
-                fixed = candidate
-                # Fix unescaped quotes in strings (basic attempt)
-                # Remove trailing commas
-                fixed = re.sub(r',\s*}', '}', fixed)
-                fixed = re.sub(r',\s*]', ']', fixed)
-                parsed = json.loads(fixed)
-                logger.debug('Successfully parsed JSON after repair attempts')
+                logger.debug('Successfully parsed JSON from first brace')
                 return parsed
             except json.JSONDecodeError:
-                continue
+                pass
+            
+            # JSON is likely truncated - extract fields manually
+            logger.info('JSON appears truncated, extracting fields manually...')
+            result = _extract_fields_from_truncated_json(json_str)
+            if result:
+                logger.info('Successfully extracted fields from truncated JSON')
+                return result
         
         # If all parsing attempts failed, log the full response and raise error
         logger.error(f'Failed to parse JSON. Full response: {response_text[:1000]}')
@@ -366,6 +339,49 @@ def parse_gemini_response(response_text: str) -> Dict[str, Any]:
     except json.JSONDecodeError as e:
         logger.error(f'JSON decode error: {str(e)}. Response: {response_text[:500]}')
         raise GeminiAnalysisError(f'Invalid JSON in Gemini response: {str(e)}')
+
+
+def _extract_fields_from_truncated_json(json_str: str) -> Optional[Dict[str, Any]]:
+    """
+    Extract fields from truncated/incomplete JSON using regex.
+    
+    Args:
+        json_str: Potentially truncated JSON string
+        
+    Returns:
+        Dictionary with extracted fields, or None if extraction fails
+    """
+    result = {}
+    
+    # Extract summary - handle multi-line and escaped content
+    summary_match = re.search(r'"summary"\s*:\s*"((?:[^"\\]|\\.)*)"', json_str)
+    if summary_match:
+        result['summary'] = summary_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+    
+    # Extract mermaid_code - handle newlines and escapes
+    mermaid_match = re.search(r'"mermaid_code"\s*:\s*"((?:[^"\\]|\\.)*)"', json_str)
+    if mermaid_match:
+        result['mermaid_code'] = mermaid_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+    
+    # Extract detected_issues array - handle complete and partial arrays
+    issues_match = re.search(r'"detected_issues"\s*:\s*\[(.*?)(?:\]|$)', json_str, re.DOTALL)
+    if issues_match:
+        issues_str = issues_match.group(1)
+        issues = re.findall(r'"((?:[^"\\]|\\.)*)"', issues_str)
+        result['detected_issues'] = [i.replace('\\"', '"') for i in issues]
+    
+    # Extract fix_recommendations array - handle complete and partial arrays
+    fixes_match = re.search(r'"fix_recommendations"\s*:\s*\[(.*?)(?:\]|$)', json_str, re.DOTALL)
+    if fixes_match:
+        fixes_str = fixes_match.group(1)
+        fixes = re.findall(r'"((?:[^"\\]|\\.)*)"', fixes_str)
+        result['fix_recommendations'] = [f.replace('\\"', '"') for f in fixes]
+    
+    # Return result if we got at least summary (the most important field)
+    if 'summary' in result:
+        return result
+    
+    return None
 
 
 def validate_response_schema(data: Dict[str, Any]) -> Dict[str, Any]:
@@ -432,49 +448,57 @@ def perform_deep_analysis(repo_url: str) -> Dict[str, Any]:
         logger.debug('Fetching README from GitHub...')
         readme_content = fetch_github_readme(repo_url)
         
-        # EXTREME content trimming - only first 800 characters max
-        # This ensures we stay well under free tier TPM limits
-        max_readme_length = 800
+        # Step 2: Clean README - strip images, badges, license, etc.
+        logger.debug('Cleaning README content...')
+        readme_content = clean_readme_content(readme_content)
+        logger.info(f'README after cleaning: {len(readme_content)} characters')
         
-        # Take only the absolute essentials: title and first paragraph
+        # Step 3: Trim to essential content (even for short READMEs)
+        max_readme_length = 1200  # Slightly higher limit since we cleaned it
+        
         if len(readme_content) > max_readme_length:
-            # Get first lines up to limit (title + description usually)
+            # Prioritize: title, description, features, installation, usage
             lines = readme_content.split('\n')
             essential_lines = []
             char_count = 0
+            in_priority_section = True  # Start assuming we're in important content
             
-            # Take only: main title (#), subtitle (##), and first 2-3 paragraphs
-            for i, line in enumerate(lines):
+            priority_headers = ['install', 'usage', 'feature', 'getting started', 'quick start', 'overview', 'about']
+            skip_headers = ['faq', 'troubleshoot', 'test', 'development', 'roadmap']
+            
+            for line in lines:
                 if char_count >= max_readme_length:
                     break
-                # Include headers and first 15 lines (usually title + description)
-                if line.strip().startswith('#') or i < 15:
-                    if char_count + len(line) + 1 <= max_readme_length:
-                        essential_lines.append(line)
-                        char_count += len(line) + 1
-                    else:
-                        # Try to end at sentence boundary
-                        remaining = max_readme_length - char_count
-                        if remaining > 50:  # If we have space, take partial line
-                            essential_lines.append(line[:remaining])
-                        break
-                elif i >= 15:
-                    # Stop after first 15 lines
-                    break
+                
+                line_lower = line.lower().strip()
+                
+                # Check if entering a priority or skip section
+                if line_lower.startswith('#'):
+                    header_text = line_lower.lstrip('#').strip()
+                    if any(p in header_text for p in skip_headers):
+                        in_priority_section = False
+                        continue
+                    elif any(p in header_text for p in priority_headers):
+                        in_priority_section = True
+                    # Always include headers (they're short)
+                    essential_lines.append(line)
+                    char_count += len(line) + 1
+                elif in_priority_section or char_count < 400:  # Always take first 400 chars
+                    essential_lines.append(line)
+                    char_count += len(line) + 1
             
             readme_content = '\n'.join(essential_lines)
-            # Final safety trim
+            # Final trim if still over
             if len(readme_content) > max_readme_length:
-                readme_content = readme_content[:max_readme_length].rsplit('.', 1)[0] + '...'
+                readme_content = readme_content[:max_readme_length].rsplit(' ', 1)[0] + '...'
         
-        # Log actual size for monitoring
-        logger.info(f'README content size: {len(readme_content)} characters')
+        logger.info(f'Final README size for API: {len(readme_content)} characters')
         
-        # Step 2: Configure Gemini Flash (required for free tier - 10x higher rate limits)
+        # Step 4: Configure Gemini Flash (required for free tier - 10x higher rate limits)
         logger.debug('Configuring Gemini Flash model...')
         model = configure_gemini_model()
         
-        # Step 3: Ultra-minimal prompt with explicit JSON format requirement
+        # Step 5: Ultra-minimal prompt with explicit JSON format requirement
         analysis_prompt = f"""Analyze this README and return ONLY valid JSON (no markdown, no code blocks, no text):
 
 README: {readme_content}
@@ -491,11 +515,11 @@ CRITICAL: Return ONLY the JSON object. No markdown, no code blocks, no explanati
         
         logger.debug('Sending request to Gemini...')
         
-        # Single retry only for free tier (minimize quota usage)
-        max_retries = 1  # Only 1 retry to save quota
-        retry_delay = 90  # 90 second delay to respect rate limits
+        # Retry logic with exponential backoff for 429 errors
+        max_retries = 3
+        base_delay = 30  # Start with 30 second delay
         
-        for attempt in range(max_retries + 1):  # +1 because range is exclusive
+        for attempt in range(max_retries):
             try:
                 # Use response_mime_type to force JSON output if supported
                 try:
@@ -503,7 +527,7 @@ CRITICAL: Return ONLY the JSON object. No markdown, no code blocks, no explanati
                         analysis_prompt,
                         generation_config={
                             'temperature': 0.2,  # Very low for consistent JSON
-                            'max_output_tokens': 800,  # Increased to ensure complete JSON
+                            'max_output_tokens': 1500,  # Enough for complete JSON response
                             'top_p': 0.7,
                             'top_k': 15,
                             'response_mime_type': 'application/json',  # Force JSON output
@@ -516,29 +540,28 @@ CRITICAL: Return ONLY the JSON object. No markdown, no code blocks, no explanati
                         analysis_prompt,
                         generation_config={
                             'temperature': 0.2,
-                            'max_output_tokens': 800,  # Increased to ensure complete JSON
+                            'max_output_tokens': 1500,  # Enough for complete JSON response
                             'top_p': 0.7,
                             'top_k': 15
                         }
                     )
                 break  # Success, exit retry loop
+                
             except Exception as e:
-                error_str = str(e)
-                # Check if it's a 429 quota error
-                if "429" in error_str or "quota" in error_str.lower() or "rate limit" in error_str.lower():
-                    if attempt < max_retries - 1:
-                        logger.warning(f'Quota/rate limit error (attempt {attempt + 1}/{max_retries}): {error_str}')
-                        logger.info(f'Waiting {retry_delay} seconds before retry...')
-                        time.sleep(retry_delay)
-                        retry_delay *= 2  # Exponential backoff: 30s, 60s, 120s
-                    else:
-                        # Last attempt failed
-                        raise GeminiAnalysisError(
-                            f'Quota exceeded after {max_retries} attempts. '
-                            f'Please wait before trying again or upgrade your API tier.'
-                        )
+                error_str = str(e).lower()
+                is_rate_limit = any(x in error_str for x in ['429', 'quota', 'rate limit', 'resource exhausted'])
+                
+                if is_rate_limit and attempt < max_retries - 1:
+                    delay = base_delay * (2 ** attempt)  # Exponential backoff: 30s, 60s, 120s
+                    logger.warning(f'Rate limit hit (attempt {attempt + 1}/{max_retries}). Sleeping {delay}s...')
+                    time.sleep(delay)
+                elif is_rate_limit:
+                    raise GeminiAnalysisError(
+                        f'API quota exceeded after {max_retries} attempts. '
+                        f'Please wait a few minutes before trying again.'
+                    )
                 else:
-                    # Not a quota error, re-raise immediately
+                    # Not a rate limit error, raise immediately
                     raise
         
         if not response.text:
