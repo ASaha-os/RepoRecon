@@ -74,6 +74,7 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
       });
       
       const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 15;
       const contentWidth = pageWidth - (margin * 2);
       let yPos = 20;
@@ -118,6 +119,87 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
       
       // Check if we need a new page
       if (yPos > 250) {
+        pdf.addPage();
+        yPos = 20;
+      }
+      
+      // Architecture Diagram Section - Capture SVG as image
+      if (diagramSvg) {
+        pdf.setFontSize(14);
+        pdf.setTextColor(6, 182, 212);
+        pdf.text("Architecture Diagram", margin, yPos);
+        yPos += 8;
+        
+        try {
+          // Convert SVG to image
+          const svgElement = document.createElement("div");
+          svgElement.innerHTML = diagramSvg;
+          const svg = svgElement.querySelector("svg");
+          
+          if (svg) {
+            // Get SVG dimensions
+            const svgWidth = svg.getAttribute("width") ? parseFloat(svg.getAttribute("width")!) : 400;
+            const svgHeight = svg.getAttribute("height") ? parseFloat(svg.getAttribute("height")!) : 300;
+            
+            // Create canvas
+            const canvas = document.createElement("canvas");
+            const scale = 2; // Higher quality
+            canvas.width = svgWidth * scale;
+            canvas.height = svgHeight * scale;
+            const ctx = canvas.getContext("2d");
+            
+            if (ctx) {
+              ctx.fillStyle = "#1a1a2e";
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.scale(scale, scale);
+              
+              // Convert SVG to data URL
+              const svgData = new XMLSerializer().serializeToString(svg);
+              const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+              const svgUrl = URL.createObjectURL(svgBlob);
+              
+              // Load image
+              const img = new Image();
+              await new Promise<void>((resolve, reject) => {
+                img.onload = () => {
+                  ctx.drawImage(img, 0, 0);
+                  URL.revokeObjectURL(svgUrl);
+                  resolve();
+                };
+                img.onerror = () => {
+                  URL.revokeObjectURL(svgUrl);
+                  reject(new Error("Failed to load SVG"));
+                };
+                img.src = svgUrl;
+              });
+              
+              // Add image to PDF
+              const imgData = canvas.toDataURL("image/png");
+              const imgWidth = contentWidth;
+              const imgHeight = (svgHeight / svgWidth) * imgWidth;
+              
+              // Check if diagram fits on current page
+              if (yPos + imgHeight > pageHeight - 20) {
+                pdf.addPage();
+                yPos = 20;
+              }
+              
+              pdf.addImage(imgData, "PNG", margin, yPos, imgWidth, Math.min(imgHeight, 120));
+              yPos += Math.min(imgHeight, 120) + 10;
+            }
+          }
+        } catch (imgErr) {
+          console.error("Failed to add diagram image:", imgErr);
+          // Fallback to text
+          pdf.setFontSize(9);
+          pdf.setTextColor(100, 100, 100);
+          pdf.text("(Diagram could not be rendered in PDF)", margin, yPos);
+          yPos += 10;
+        }
+      }
+      
+      // Check if we need a new page
+      if (yPos > 200) {
         pdf.addPage();
         yPos = 20;
       }
@@ -174,43 +256,8 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
         pdf.text("No recommendations", margin + 5, yPos);
         yPos += 8;
       }
-      yPos += 10;
       
-      // Check if we need a new page for mermaid code
-      if (yPos > 200) {
-        pdf.addPage();
-        yPos = 20;
-      }
-      
-      // Mermaid Code Section (as text)
-      if (data.mermaid_code) {
-        pdf.setFontSize(14);
-        pdf.setTextColor(6, 182, 212);
-        pdf.text("Architecture Diagram Code", margin, yPos);
-        yPos += 8;
-        
-        pdf.setFontSize(8);
-        pdf.setTextColor(80, 80, 80);
-        const cleanCode = data.mermaid_code.replace(/\\n/g, "\n").replace(/\\t/g, "  ");
-        const codeLines = pdf.splitTextToSize(cleanCode, contentWidth);
-        
-        // Only include first 30 lines to avoid overflow
-        const limitedLines = codeLines.slice(0, 30);
-        limitedLines.forEach((line: string) => {
-          if (yPos > 280) {
-            pdf.addPage();
-            yPos = 20;
-          }
-          pdf.text(line, margin, yPos);
-          yPos += 4;
-        });
-        
-        if (codeLines.length > 30) {
-          pdf.text("... (truncated)", margin, yPos);
-        }
-      }
-      
-      // Footer on last page
+      // Footer on all pages
       const pageCount = pdf.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         pdf.setPage(i);
@@ -219,7 +266,7 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
         pdf.text(
           `Page ${i} of ${pageCount} | Generated by RepoRecon`,
           pageWidth / 2,
-          pdf.internal.pageSize.getHeight() - 10,
+          pageHeight - 10,
           { align: "center" }
         );
       }
