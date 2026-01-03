@@ -14,9 +14,17 @@ Instant GitHub repository analysis, architectural diagrams, and bug fixes powere
 
 Check out our **Canva presentation** to see the full vision and pitch:
 
-[![View Presentation](https://img.shields.io/badge/📽️%20View%20Presentation-Canva-FF6B9D?style=for-the-badge)](https://www.canva.com/design/DAG9Vr_WnHo/uZElXgVqcPm9d6SDqExkdg/view?utm_content=DAG9Vr_WnHo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hfb61c4573b)
+<div align="center">
 
-*Dive into our hackathon pitch, feature highlights, and vision for the future!*
+### 🎨 **[👉 CLICK HERE TO VIEW OUR HACKATHON PITCH DECK 👈](https://www.canva.com/design/DAG9Vr_WnHo/uZElXgVqcPm9d6SDqExkdg/view?utm_content=DAG9Vr_WnHo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hfb61c4573b)**
+
+[![Canva Presentation](https://img.shields.io/badge/🎨%20CANVA%20PRESENTATION-FF6B9D?style=for-the-badge&logo=canva&logoColor=white&labelColor=FF1493)](https://www.canva.com/design/DAG9Vr_WnHo/uZElXgVqcPm9d6SDqExkdg/view?utm_content=DAG9Vr_WnHo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hfb61c4573b)
+
+**Judges: Don't miss our beautiful presentation! 🚀**
+
+*Dive into our vision, feature highlights, and why RepoRecon is the future of code analysis!*
+
+</div>
 
 ---
 

@@ -61,56 +61,177 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
   }, [data.mermaid_code]);
 
   const handleDownloadPDF = async () => {
-    if (!reportRef.current) return;
-    
     setIsDownloading(true);
     
     try {
-      const html2canvas = (await import("html2canvas")).default;
       const { jsPDF } = await import("jspdf");
       
-      const element = reportRef.current;
-      
-      const canvas = await html2canvas(element, {
-        scale: 1.5,
-        backgroundColor: "#1a1a2e",
-        logging: false,
-        useCORS: true,
-      });
-      
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      
+      // Create PDF with A4 format
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "px",
-        format: [canvas.width, canvas.height + 100],
+        unit: "mm",
+        format: "a4",
       });
       
-      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const margin = 15;
+      const contentWidth = pageWidth - (margin * 2);
+      let yPos = 20;
       
-      // Add title
-      pdf.setFontSize(24);
+      // Title
+      pdf.setFontSize(22);
       pdf.setTextColor(139, 92, 246);
-      pdf.text("Repository Analysis Report", pdfWidth / 2, 40, { align: "center" });
+      pdf.text("Repository Analysis Report", pageWidth / 2, yPos, { align: "center" });
+      yPos += 10;
       
+      // Repo URL
       if (repoUrl) {
-        pdf.setFontSize(12);
-        pdf.setTextColor(150, 150, 150);
-        pdf.text(repoUrl, pdfWidth / 2, 60, { align: "center" });
+        pdf.setFontSize(10);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(repoUrl, pageWidth / 2, yPos, { align: "center" });
+        yPos += 6;
       }
       
-      pdf.setFontSize(10);
-      pdf.setTextColor(100, 100, 100);
-      pdf.text(`Generated: ${new Date().toLocaleString()}`, pdfWidth / 2, 80, { align: "center" });
+      // Date
+      pdf.setFontSize(9);
+      pdf.setTextColor(120, 120, 120);
+      pdf.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, yPos, { align: "center" });
+      yPos += 15;
       
-      // Add the captured content
-      pdf.addImage(imgData, "JPEG", 0, 100, canvas.width, canvas.height);
+      // Divider line
+      pdf.setDrawColor(139, 92, 246);
+      pdf.setLineWidth(0.5);
+      pdf.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 10;
+      
+      // Summary Section
+      pdf.setFontSize(14);
+      pdf.setTextColor(139, 92, 246);
+      pdf.text("Summary", margin, yPos);
+      yPos += 8;
+      
+      pdf.setFontSize(10);
+      pdf.setTextColor(60, 60, 60);
+      const summaryLines = pdf.splitTextToSize(data.summary || "No summary available", contentWidth);
+      pdf.text(summaryLines, margin, yPos);
+      yPos += summaryLines.length * 5 + 10;
+      
+      // Check if we need a new page
+      if (yPos > 250) {
+        pdf.addPage();
+        yPos = 20;
+      }
+      
+      // Detected Issues Section
+      pdf.setFontSize(14);
+      pdf.setTextColor(220, 38, 38);
+      pdf.text(`Detected Issues (${data.detected_issues.length})`, margin, yPos);
+      yPos += 8;
+      
+      pdf.setFontSize(10);
+      pdf.setTextColor(60, 60, 60);
+      if (data.detected_issues.length > 0) {
+        data.detected_issues.forEach((issue, index) => {
+          if (yPos > 270) {
+            pdf.addPage();
+            yPos = 20;
+          }
+          const issueLines = pdf.splitTextToSize(`${index + 1}. ${issue}`, contentWidth - 5);
+          pdf.text(issueLines, margin + 5, yPos);
+          yPos += issueLines.length * 5 + 3;
+        });
+      } else {
+        pdf.text("No issues detected", margin + 5, yPos);
+        yPos += 8;
+      }
+      yPos += 7;
+      
+      // Check if we need a new page
+      if (yPos > 250) {
+        pdf.addPage();
+        yPos = 20;
+      }
+      
+      // Recommendations Section
+      pdf.setFontSize(14);
+      pdf.setTextColor(20, 184, 166);
+      pdf.text(`Recommendations (${data.fix_recommendations.length})`, margin, yPos);
+      yPos += 8;
+      
+      pdf.setFontSize(10);
+      pdf.setTextColor(60, 60, 60);
+      if (data.fix_recommendations.length > 0) {
+        data.fix_recommendations.forEach((rec, index) => {
+          if (yPos > 270) {
+            pdf.addPage();
+            yPos = 20;
+          }
+          const recLines = pdf.splitTextToSize(`${index + 1}. ${rec}`, contentWidth - 5);
+          pdf.text(recLines, margin + 5, yPos);
+          yPos += recLines.length * 5 + 3;
+        });
+      } else {
+        pdf.text("No recommendations", margin + 5, yPos);
+        yPos += 8;
+      }
+      yPos += 10;
+      
+      // Check if we need a new page for mermaid code
+      if (yPos > 200) {
+        pdf.addPage();
+        yPos = 20;
+      }
+      
+      // Mermaid Code Section (as text)
+      if (data.mermaid_code) {
+        pdf.setFontSize(14);
+        pdf.setTextColor(6, 182, 212);
+        pdf.text("Architecture Diagram Code", margin, yPos);
+        yPos += 8;
+        
+        pdf.setFontSize(8);
+        pdf.setTextColor(80, 80, 80);
+        const cleanCode = data.mermaid_code.replace(/\\n/g, "\n").replace(/\\t/g, "  ");
+        const codeLines = pdf.splitTextToSize(cleanCode, contentWidth);
+        
+        // Only include first 30 lines to avoid overflow
+        const limitedLines = codeLines.slice(0, 30);
+        limitedLines.forEach((line: string) => {
+          if (yPos > 280) {
+            pdf.addPage();
+            yPos = 20;
+          }
+          pdf.text(line, margin, yPos);
+          yPos += 4;
+        });
+        
+        if (codeLines.length > 30) {
+          pdf.text("... (truncated)", margin, yPos);
+        }
+      }
+      
+      // Footer on last page
+      const pageCount = pdf.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.setTextColor(150, 150, 150);
+        pdf.text(
+          `Page ${i} of ${pageCount} | Generated by RepoRecon`,
+          pageWidth / 2,
+          pdf.internal.pageSize.getHeight() - 10,
+          { align: "center" }
+        );
+      }
       
       // Save PDF
       const fileName = repoUrl 
-        ? `analysis-${repoUrl.split("/").pop()}-${Date.now()}.pdf`
-        : `analysis-report-${Date.now()}.pdf`;
+        ? `reporecon-${repoUrl.split("/").pop()}-${Date.now()}.pdf`
+        : `reporecon-analysis-${Date.now()}.pdf`;
       pdf.save(fileName);
+      
+      const { toast } = await import("sonner");
+      toast.success("PDF downloaded successfully!");
     } catch (err) {
       console.error("PDF generation error:", err);
       const { toast } = await import("sonner");

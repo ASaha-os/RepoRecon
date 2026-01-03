@@ -38,11 +38,12 @@ export const HeroSection = () => {
     const loadingToast = toast.loading(`Analyzing ${repoUrl}...`);
 
     try {
-      const apiUrl = "http://localhost:8000/api/analyze/";
-      console.log("Making request to:", apiUrl);
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+      const analyzeEndpoint = `${apiUrl}/api/analyze/`;
+      console.log("Making request to:", analyzeEndpoint);
       console.log("Request body:", { github_url: repoUrl });
 
-      const response = await fetch(apiUrl, {
+      const response = await fetch(analyzeEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
