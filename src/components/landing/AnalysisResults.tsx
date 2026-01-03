@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, FileText, GitBranch, AlertTriangle, Lightbulb, Download, Loader2 } from "lucide-react";
+import { X, FileText, GitBranch, AlertTriangle, Lightbulb, Download, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface AnalysisData {
@@ -66,46 +66,45 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
     setIsDownloading(true);
     
     try {
-      // Dynamically import to avoid build issues
       const html2canvas = (await import("html2canvas")).default;
       const { jsPDF } = await import("jspdf");
       
-      const canvas = await html2canvas(reportRef.current, {
-        scale: 2,
-        backgroundColor: "#0a0a0f",
+      const element = reportRef.current;
+      
+      const canvas = await html2canvas(element, {
+        scale: 1.5,
+        backgroundColor: "#1a1a2e",
         logging: false,
+        useCORS: true,
       });
       
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "mm",
-        format: "a4",
+        unit: "px",
+        format: [canvas.width, canvas.height + 100],
       });
       
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
       
       // Add title
-      pdf.setFontSize(20);
+      pdf.setFontSize(24);
       pdf.setTextColor(139, 92, 246);
-      pdf.text("Repository Analysis Report", pdfWidth / 2, 15, { align: "center" });
+      pdf.text("Repository Analysis Report", pdfWidth / 2, 40, { align: "center" });
       
       if (repoUrl) {
-        pdf.setFontSize(10);
+        pdf.setFontSize(12);
         pdf.setTextColor(150, 150, 150);
-        pdf.text(repoUrl, pdfWidth / 2, 22, { align: "center" });
+        pdf.text(repoUrl, pdfWidth / 2, 60, { align: "center" });
       }
       
-      pdf.setFontSize(8);
-      pdf.text(`Generated: ${new Date().toLocaleString()}`, pdfWidth / 2, 28, { align: "center" });
+      pdf.setFontSize(10);
+      pdf.setTextColor(100, 100, 100);
+      pdf.text(`Generated: ${new Date().toLocaleString()}`, pdfWidth / 2, 80, { align: "center" });
       
       // Add the captured content
-      pdf.addImage(imgData, "PNG", imgX, 35, imgWidth * ratio, imgHeight * ratio);
+      pdf.addImage(imgData, "JPEG", 0, 100, canvas.width, canvas.height);
       
       // Save PDF
       const fileName = repoUrl 
@@ -114,6 +113,8 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
       pdf.save(fileName);
     } catch (err) {
       console.error("PDF generation error:", err);
+      const { toast } = await import("sonner");
+      toast.error("Failed to generate PDF. Please try again.");
     } finally {
       setIsDownloading(false);
     }
@@ -241,6 +242,32 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
               ) : (
                 <p className="text-sm text-muted-foreground">No recommendations</p>
               )}
+            </div>
+          </div>
+
+          {/* Developer Note */}
+          <div className="mt-6 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <Info className="w-4 h-4 text-amber-500" />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-sm font-semibold text-amber-500 mb-1 flex items-center gap-2">
+                  Developer Note
+                  {/* Google Logo */}
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                </h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  This analysis is generated by AI (Gemini 2.5 Flash-Latest) and may occasionally produce inaccurate or incomplete results. 
+                  If you encounter unexpected output, please refresh the page or try again after a brief interval. 
+                  As this service operates on a free tier, intermittent errors or rate limiting may occur during high-traffic periods.
+                </p>
+              </div>
             </div>
           </div>
         </div>

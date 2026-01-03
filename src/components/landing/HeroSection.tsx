@@ -141,7 +141,7 @@ export const HeroSection = () => {
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="url(#geminiGradient)"/>
           </svg>
           
-          <span className="text-sm font-medium text-foreground">Powered by Google Gemini</span>
+          <span className="text-sm font-medium text-foreground">Powered by Gemini 2.5 Flash-Latest</span>
         </div>
 
         {/* Main headline */}
@@ -159,7 +159,7 @@ export const HeroSection = () => {
           className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 text-balance opacity-0 animate-fade-up"
           style={{ animationDelay: "0.3s" }}
         >
-          Instant GitHub repository analysis, architectural diagrams, and bug fixes powered by Gemini 1.5 Pro. Free, unlimited, in-depth.
+          Instant GitHub repository analysis, architectural diagrams, and bug fixes powered by Gemini 2.5 Flash-Latest. Free, unlimited, in-depth.
         </p>
 
         {/* CTA Input Group */}

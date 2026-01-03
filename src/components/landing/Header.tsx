@@ -26,7 +26,7 @@ export const Header = () => {
           <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             How it Works
           </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+          <a href="https://github.com/ASaha-os/RepoRecon" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
             <Github className="w-4 h-4" />
             GitHub
           </a>

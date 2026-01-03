@@ -203,8 +203,8 @@ def configure_gemini_model() -> Any:
     # Try Flash models in order of preference (newer versions first, then older)
     # Flash models have 10x higher rate limits than Pro models
     preferred_flash_models = [
-        'gemini-2.5-flash-lite-preview-09-2025',    # Latest experimental
-             # 8B variant
+        'gemini-2.5-flash-latest',    # Latest stable flash model
+        'gemini-2.5-flash-lite-preview-09-2025',    # Experimental
     ]
     
     # First, try any Flash models found in available list

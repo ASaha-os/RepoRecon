@@ -57,7 +57,7 @@ export const Footer = () => {
           {/* Social Links */}
           <div className="flex items-center gap-6">
             <a
-              href="https://linkedin.com/in/akash-saha"
+              href="https://www.linkedin.com/in/akash-s-764359307/"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2 px-5 py-3 rounded-full bg-foreground/5 hover:bg-purple/10 border border-border hover:border-purple/30 transition-all duration-300"
@@ -66,7 +66,7 @@ export const Footer = () => {
               <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">LinkedIn</span>
             </a>
             <a
-              href="https://github.com"
+              href="https://github.com/ASaha-os"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2 px-5 py-3 rounded-full bg-foreground/5 hover:bg-cyan/10 border border-border hover:border-cyan/30 transition-all duration-300"
