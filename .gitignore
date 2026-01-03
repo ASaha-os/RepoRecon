@@ -14,12 +14,22 @@ dist-ssr
 venv/
 \venv
 
-# Environment files
+# Environment files - ALL VARIANTS (CRITICAL - PREVENTS SENSITIVE DATA LEAKS)
 .env
+.env.*
 .env.local
+.env.dev
+.env.development
+.env.prod
 .env.production
+.env.test
+.env.staging
+*.env
+!.env.example
 backend/.env
-.env.example
+backend/.env.*
+backend/backend/.env
+backend/backend/.env.*
 
 # Editor directories and files
 .vscode/*
@@ -45,3 +55,25 @@ eggs/
 *.egg-info/
 *.egg
 staticfiles/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+db.sqlite3
+backend/db.sqlite3
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

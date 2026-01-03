@@ -1,24 +1,59 @@
 # RepoRecon Backend
+
+# Python
 *.py[cod]
 __pycache__/
 *.so
 .Python
+*.egg-info/
+*.egg
+
+# Virtual Environments
 env/
 venv/
 .venv
 ENV/
-db.sqlite3
-.DS_Store
+env.bak/
+venv.bak/
+
+# Environment Variables - ALL VARIANTS
 .env
+.env.*
+.env.local
+.env.dev
+.env.development
+.env.prod
+.env.production
+.env.test
+.env.staging
+*.env
+!.env.example
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+*.db
+
+# Django
 *.log
+local_settings.py
+staticfiles/
+media/
+
+# IDE
+.DS_Store
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
+
+# Testing
 .coverage
 htmlcov/
+.pytest_cache/
+.tox/
+
+# Build
 dist/
 build/
-*.egg-info/
-.env.example
