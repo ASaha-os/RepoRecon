@@ -49,6 +49,24 @@ Perfect for code reviews, onboarding, architecture planning, and hackathon showc
 - Analyzes entire repositories without chunking or loss of understanding
 - Lightning-fast processing on the free tier
 
+### 📊 Repository Health Score Card
+- **Visual health metrics** with overall score (0-100)
+- Security, Performance, Maintainability, and Documentation scores
+- **Shareable as image** - perfect for README badges and social media
+- Download as PNG for presentations and reports
+
+### 💬 AI Codebase Q&A
+- **Interactive chat interface** to ask questions about the codebase
+- "Where is authentication handled?" - Get instant answers
+- Context-aware responses based on analysis
+- **Demo-ready** - wow moment for judges and users
+
+### 🔗 Shareable Analysis Links
+- **One-click sharing** via URL or social media
+- Persistent storage using localStorage
+- Auto-generated shareable links for every analysis
+- Share insights with your team instantly
+
 ### 📈 Beautiful Visualizations
 - Auto-generated **Mermaid.js sequence diagrams** for architecture flow
 - Interactive, responsive diagrams that work on all devices
@@ -56,12 +74,13 @@ Perfect for code reviews, onboarding, architecture planning, and hackathon showc
 
 ### 📥 Export & Share
 - **Download analysis as PDF** with one click
+- **Download health score card as PNG**
 - Share findings with your team instantly
 - Professional report formatting
 
 ### 🎨 Modern UI/UX
 - Sleek, dark-themed interface with glassmorphism design
-- Smooth animations and transitions
+- Smooth animations and transitions powered by Framer Motion
 - Fully responsive (mobile, tablet, desktop)
 - Light/Dark theme toggle
 
@@ -139,11 +158,9 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Create .env file
+# Create .env file and add your Gemini API key
 cp .env.example .env
-
-# Add your Google Gemini API key to .env
-# GEMINI_API_KEY=your_api_key_here
+# Edit .env and add: GEMINI_API_KEY=your_api_key_here
 
 # Run migrations
 python manage.py migrate
@@ -151,6 +168,8 @@ python manage.py migrate
 # Start Django server
 python manage.py runserver
 ```
+
+**📖 Need help with Gemini API setup? See [GEMINI_SETUP.md](./GEMINI_SETUP.md)**
 
 The backend will be available at `http://localhost:8000`
 
@@ -161,17 +180,28 @@ The backend will be available at `http://localhost:8000`
 1. **Open RepoRecon** in your browser (http://localhost:5173)
 2. **Paste a GitHub repository URL** (e.g., `https://github.com/username/repo`)
 3. **Click "Analyze Repo"** and watch the magic happen ✨
-4. **Review the analysis**:
+4. **Explore the results**:
+   - 📊 **Health Score Card** - Visual metrics you can share
+   - 💬 **AI Q&A** - Ask questions about the codebase
    - 📝 Architecture summary
    - 🎨 Visual diagram
    - 🐛 Detected issues
    - 💡 Recommendations
-5. **Download as PDF** to share with your team
+5. **Share your analysis**:
+   - Click "Share Analysis" to get a shareable link
+   - Download health score card as PNG
+   - Download full report as PDF
 
 ### Example Repositories to Try
 - `https://github.com/facebook/react`
 - `https://github.com/torvalds/linux`
 - `https://github.com/nodejs/node`
+
+### Demo Questions for AI Q&A
+- "Where is authentication handled?"
+- "What are the main security concerns?"
+- "How is the data flow structured?"
+- "What improvements should I prioritize?"
 
 ---
 
@@ -237,6 +267,51 @@ CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
 ---
 
 ## 🎨 Features in Detail
+
+### 📊 Repository Health Score Card
+The health score card provides an at-a-glance view of your repository's quality:
+
+- **Overall Score**: Weighted average of all metrics (0-100)
+- **Security Score**: Based on detected security issues
+- **Performance Score**: Optimization and efficiency metrics
+- **Maintainability Score**: Code complexity and structure
+- **Documentation Score**: README and code documentation quality
+
+**Why it's special**:
+- 📸 **Shareable as image** - developers love to screenshot and share
+- 🎯 **Visual impact** - judges notice visual elements
+- 📊 **Data-driven** - backed by AI analysis
+- 🚀 **Organic traction** - perfect for social media
+
+### 💬 AI Codebase Q&A
+Interactive chat interface that answers questions about your codebase:
+
+**Example questions**:
+- "Where is authentication handled?"
+- "What are the security vulnerabilities?"
+- "How does the data flow work?"
+- "What should I fix first?"
+
+**Why it's special**:
+- 🎭 **Wow demo moment** - live interaction impresses judges
+- 🧠 **Context-aware** - uses analysis data for accurate answers
+- ⚡ **Instant responses** - no waiting for re-analysis
+- 💡 **Educational** - helps developers understand codebases faster
+
+### 🔗 Shareable Analysis Links
+Every analysis gets a unique shareable link:
+
+**Features**:
+- 🔗 **Persistent URLs** - share via link or social media
+- 💾 **Local storage** - fast loading of shared analyses
+- 🗑️ **Auto-cleanup** - removes analyses older than 30 days
+- 📱 **Mobile-friendly** - works on all devices
+
+**Why it's special**:
+- 🚀 **Quick engineering win** - implemented in hours
+- 🎯 **Real product feel** - not just a demo toy
+- 👥 **Team collaboration** - share insights instantly
+- 🏆 **Judge-friendly** - easy to share during presentations
 
 ### Smart Repository Analysis
 - Fetches README and project structure from GitHub
