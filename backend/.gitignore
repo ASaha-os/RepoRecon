@@ -25,6 +25,7 @@ venv.bak/
 .env.prod
 .env.production
 .env.test
+.env.example
 .env.staging
 *.env
 !.env.example

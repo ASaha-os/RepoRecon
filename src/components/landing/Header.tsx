@@ -27,8 +27,8 @@ export const Header = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "glass border-b border-border/60 shadow-sm"
-          : "bg-transparent border-b border-transparent"
+          ? "glass shadow-sm"
+          : "bg-transparent"
       }`}
     >
       <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
@@ -38,7 +38,7 @@ export const Header = () => {
           className="flex items-center gap-2.5 group"
           aria-label="RepoRecon home"
         >
-          <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center shadow-md shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-shadow">
+          <div className="w-8 h-8 rounded-lg bg-navy flex items-center justify-center shadow-md transition-shadow group-hover:shadow-lg">
             <span className="text-white font-bold text-sm tracking-tight">R</span>
           </div>
           <span className="font-semibold text-[15px] tracking-tight text-foreground">
@@ -72,9 +72,8 @@ export const Header = () => {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button
-            variant="gradient"
             size="sm"
-            className="hidden sm:flex h-8 px-4 text-xs font-semibold shadow-md shadow-violet-500/20 hover:shadow-violet-500/30 transition-shadow"
+            className="hidden sm:flex h-8 px-4 text-xs font-semibold bg-navy text-white hover:bg-navy/90 shadow-md transition-all duration-200"
             onClick={scrollToTop}
           >
             Try Free

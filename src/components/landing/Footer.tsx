@@ -7,21 +7,21 @@ export const Footer = () => {
   return (
     <footer className="border-t border-border bg-background">
       {/* CTA band */}
-      <div className="py-20 px-5 sm:px-8 text-center">
+      <div className="py-24 px-5 sm:px-8 text-center">
         <div className="max-w-2xl mx-auto">
-          <p className="tag tag-violet mx-auto mb-6 w-fit">Get started today</p>
-          <h2 className="heading-xl text-foreground mb-4">
+          <p className="tag tag-navy mx-auto mb-6 w-fit">Get started today</p>
+          <h2 className="heading-xl mb-4">
             Ready to understand
             <br />
-            <span className="gradient-text">your codebase?</span>
+            <span className="accent-navy">your codebase?</span>
           </h2>
-          <p className="text-base text-muted-foreground mb-8 max-w-md mx-auto">
-            Free, instant, no sign-up. Paste a GitHub URL and get a full architectural analysis in seconds.
+          <p className="body-lg mb-10 max-w-md mx-auto">
+            Free, instant, no sign-up. Paste a GitHub URL and get a full
+            architectural analysis in seconds.
           </p>
           <Button
-            variant="gradient"
-            size="xl"
-            className="group h-12 px-8 font-semibold shadow-lg shadow-violet-500/20 hover:shadow-violet-500/35 transition-shadow"
+            size="lg"
+            className="group h-12 px-8 font-semibold rounded-xl bg-navy text-white hover:bg-navy/90 shadow-lg transition-all duration-200"
             onClick={scrollToTop}
           >
             Analyze a repo
@@ -35,7 +35,7 @@ export const Footer = () => {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Logo */}
           <button onClick={scrollToTop} className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg gradient-bg flex items-center justify-center shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-navy flex items-center justify-center shadow-sm">
               <span className="text-white font-bold text-xs">R</span>
             </div>
             <span className="font-semibold text-sm text-foreground">RepoRecon</span>
@@ -47,7 +47,7 @@ export const Footer = () => {
               href="https://www.linkedin.com/in/akash-s-764359307/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-foreground hover:text-violet-500 transition-colors"
+              className="font-medium text-foreground hover:text-primary transition-colors"
             >
               Akash Saha
             </a>

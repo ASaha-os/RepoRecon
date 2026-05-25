@@ -90,7 +90,7 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-navy flex items-center justify-center">
             <FileText className="w-4 h-4 text-white" />
           </div>
           <div>
@@ -111,19 +111,19 @@ export const AnalysisResults = ({ data, repoUrl, onClose }: AnalysisResultsProps
 
       <div className="p-6 space-y-5">
         {/* Summary */}
-        <div className="p-4 rounded-xl bg-violet-500/5 border border-violet-500/15">
+        <div className="p-4 rounded-xl bg-muted/50 border border-border">
           <div className="flex items-center gap-2 mb-2">
-            <GitBranch className="w-3.5 h-3.5 text-violet-500" />
-            <span className="text-xs font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wide">Summary</span>
+            <GitBranch className="w-3.5 h-3.5 text-foreground/60" />
+            <span className="text-xs font-semibold text-foreground/70 uppercase tracking-wide">Summary</span>
           </div>
           <p className="text-sm text-foreground leading-relaxed">{data.summary}</p>
         </div>
 
         {/* Diagram */}
-        <div className="p-4 rounded-xl bg-sky-500/5 border border-sky-500/15">
+        <div className="p-4 rounded-xl bg-muted/50 border border-border">
           <div className="flex items-center gap-2 mb-3">
-            <GitBranch className="w-3.5 h-3.5 text-sky-500" />
-            <span className="text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wide">Architecture Diagram</span>
+            <GitBranch className="w-3.5 h-3.5 text-foreground/60" />
+            <span className="text-xs font-semibold text-foreground/70 uppercase tracking-wide">Architecture Diagram</span>
           </div>
           <div ref={mermaidRef} className="bg-background rounded-lg border border-border overflow-x-auto p-4 min-h-[120px] flex items-center justify-center">
             {diagramSvg ? (

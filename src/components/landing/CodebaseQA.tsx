@@ -53,7 +53,7 @@ export const CodebaseQA = ({ repoUrl, analysisData }: CodebaseQAProps) => {
     <div className="card-base flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
-        <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-navy flex items-center justify-center shrink-0">
           <MessageSquare className="w-4 h-4 text-white" />
         </div>
         <div>
@@ -74,13 +74,13 @@ export const CodebaseQA = ({ repoUrl, analysisData }: CodebaseQAProps) => {
               className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               {msg.role === "assistant" && (
-                <div className="w-7 h-7 rounded-lg gradient-bg flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-navy flex items-center justify-center shrink-0 mt-0.5">
                   <Bot className="w-3.5 h-3.5 text-white" />
                 </div>
               )}
               <div className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                 msg.role === "user"
-                  ? "bg-violet-500 text-white rounded-br-sm"
+                  ? "bg-primary text-white rounded-br-sm"
                   : "bg-muted text-foreground rounded-bl-sm"
               }`}>
                 {msg.content}
@@ -96,7 +96,7 @@ export const CodebaseQA = ({ repoUrl, analysisData }: CodebaseQAProps) => {
 
         {isLoading && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
-            <div className="w-7 h-7 rounded-lg gradient-bg flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-navy flex items-center justify-center shrink-0">
               <Bot className="w-3.5 h-3.5 text-white" />
             </div>
             <div className="px-4 py-3 rounded-2xl rounded-bl-sm bg-muted">
@@ -119,7 +119,7 @@ export const CodebaseQA = ({ repoUrl, analysisData }: CodebaseQAProps) => {
             <button
               key={q}
               onClick={() => ask(q)}
-              className="tag hover:tag-violet transition-all duration-150 text-left"
+              className="tag hover:tag-navy transition-all duration-150 text-left"
             >
               {q}
             </button>
@@ -140,7 +140,7 @@ export const CodebaseQA = ({ repoUrl, analysisData }: CodebaseQAProps) => {
         />
         <Button
           size="sm"
-          variant="gradient"
+          variant="default"
           onClick={() => ask(input)}
           disabled={isLoading || !input.trim()}
           className="h-9 w-9 p-0 shrink-0"
