@@ -38,9 +38,11 @@ export const Header = () => {
           className="flex items-center gap-2.5 group"
           aria-label="RepoRecon home"
         >
-          <div className="w-8 h-8 rounded-lg bg-navy flex items-center justify-center shadow-md transition-shadow group-hover:shadow-lg">
-            <span className="text-white font-bold text-sm tracking-tight">R</span>
-          </div>
+          <img
+            src="/RepoRecon-logo.png"
+            alt="RepoRecon"
+            className="w-8 h-8 rounded-lg shadow-md transition-shadow group-hover:shadow-lg object-cover"
+          />
           <span className="font-semibold text-[15px] tracking-tight text-foreground">
             RepoRecon
           </span>

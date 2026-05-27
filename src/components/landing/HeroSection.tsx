@@ -14,9 +14,9 @@ import {
 } from "@/lib/shareUtils";
 
 const EXAMPLE_REPOS = [
-  "https://github.com/facebook/react",
-  "https://github.com/vercel/next.js",
-  "https://github.com/django/django",
+  "https://github.com/expressjs/express",
+  "https://github.com/pallets/flask",
+  "https://github.com/sindresorhus/awesome",
 ];
 
 export const HeroSection = () => {
@@ -89,7 +89,7 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-5 sm:px-8 pt-28 pb-20 overflow-hidden">
+    <section className="relative flex flex-col items-center justify-center px-5 sm:px-8 pt-28 pb-20">
 
       {/* ── Video Background ─────────────────────────── */}
       <div className="video-overlay">
@@ -98,14 +98,14 @@ export const HeroSection = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0 }}
+          className="w-full h-full object-cover"
+          style={{ position: 'absolute', inset: 0, zIndex: 0 }}
         >
           <source src="/static/home-bg.mp4" type="video/mp4" />
         </video>
       </div>
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto text-center">
+      <div className="relative z-10 w-full max-w-4xl mx-auto text-center min-h-[calc(100vh-12rem)] flex flex-col items-center justify-center">
 
         {/* ── Eyebrow badge ───────────────────────── */}
         <motion.div

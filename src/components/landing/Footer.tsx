@@ -35,9 +35,11 @@ export const Footer = () => {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Logo */}
           <button onClick={scrollToTop} className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg bg-navy flex items-center justify-center shadow-sm">
-              <span className="text-white font-bold text-xs">R</span>
-            </div>
+            <img
+              src="/RepoRecon-logo.png"
+              alt="RepoRecon"
+              className="w-7 h-7 rounded-lg shadow-sm object-cover"
+            />
             <span className="font-semibold text-sm text-foreground">RepoRecon</span>
           </button>
 
