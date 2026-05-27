@@ -115,7 +115,7 @@ export const HeroSection = () => {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-card/80 backdrop-blur-sm mb-8 text-xs font-medium text-muted-foreground"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          Powered by Puter AI · Free · No API Key
+          Powered by Puter AI · Free · No API Key Needed
         </motion.div>
 
         {/* ── Headline ────────────────────────────── */}

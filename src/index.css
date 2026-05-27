@@ -6,53 +6,53 @@
 
 @layer base {
   :root {
-    /* ── Premium palette: Pearl White + Deep Navy ──── */
-    --background: 0 0% 96.9%;          /* #F5F5F7 — Apple pearl */
-    --foreground: 210 29% 14%;          /* #1D1D1F — charcoal black */
+    /* ── Premium Light: Warm Ivory + Deep Navy ──── */
+    --background: 40 33% 97.5%;           /* #FAF9F6 — warm ivory */
+    --foreground: 220 25% 12%;            /* #171B26 — deep ink */
 
-    --card: 0 0% 100%;                  /* pure white cards */
-    --card-foreground: 210 29% 14%;
+    --card: 40 20% 99%;                   /* warm white cards */
+    --card-foreground: 220 25% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 29% 14%;
+    --popover: 40 20% 99%;
+    --popover-foreground: 220 25% 12%;
 
-    --primary: 209 100% 14%;            /* #002040 — deep navy */
-    --primary-foreground: 0 0% 100%;
+    --primary: 215 90% 22%;               /* #0A2647 — rich navy */
+    --primary-foreground: 40 33% 97.5%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 210 29% 14%;
+    --secondary: 35 25% 95%;              /* warm cream */
+    --secondary-foreground: 220 25% 12%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 14% 46%;    /* slate gray */
+    --muted: 35 20% 95%;                  /* soft cream muted */
+    --muted-foreground: 220 12% 50%;      /* warm slate */
 
-    --accent: 209 100% 14%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 215 90% 22%;
+    --accent-foreground: 40 33% 97.5%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 90%;
-    --input: 220 13% 90%;
-    --ring: 209 100% 14%;
+    --border: 30 15% 88%;                 /* warm border */
+    --input: 30 15% 88%;
+    --ring: 215 90% 22%;
 
     --radius: 0.75rem;
 
-    /* Brand — navy only */
-    --navy: 209 100% 14%;              /* #002040 */
-    --charcoal: 210 29% 14%;           /* #1D1D1F */
-    --slate: 215 14% 46%;              /* muted prose */
-    --pearl: 0 0% 96.9%;               /* #F5F5F7 */
+    /* Brand */
+    --navy: 215 90% 22%;                  /* #0A2647 */
+    --charcoal: 220 25% 12%;              /* #171B26 */
+    --slate: 220 12% 50%;                 /* warm slate prose */
+    --pearl: 40 33% 97.5%;                /* #FAF9F6 */
 
-    /* Shadows — Apple-tier, subtle, directional */
-    --shadow-xs:  0 1px 2px 0 rgb(0 0 0 / 0.04);
-    --shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
-    --shadow-md:  0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03);
-    --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -4px rgb(0 0 0 / 0.03);
-    --shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 0.06), 0 8px 10px -6px rgb(0 0 0 / 0.03);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.1);
+    /* Shadows — warm-tinted, Apple-tier */
+    --shadow-xs:  0 1px 2px 0 rgb(30 20 10 / 0.04);
+    --shadow-sm:  0 1px 3px 0 rgb(30 20 10 / 0.06), 0 1px 2px -1px rgb(30 20 10 / 0.04);
+    --shadow-md:  0 4px 6px -1px rgb(30 20 10 / 0.05), 0 2px 4px -2px rgb(30 20 10 / 0.03);
+    --shadow-lg:  0 10px 15px -3px rgb(30 20 10 / 0.06), 0 4px 6px -4px rgb(30 20 10 / 0.03);
+    --shadow-xl:  0 20px 25px -5px rgb(30 20 10 / 0.07), 0 8px 10px -6px rgb(30 20 10 / 0.03);
+    --shadow-2xl: 0 25px 50px -12px rgb(30 20 10 / 0.12);
 
-    --glass-bg: 255 255 255 / 0.82;
-    --glass-border: 220 13% 90%;
+    --glass-bg: 40 20% 99% / 0.82;
+    --glass-border: 30 15% 88%;
   }
 
   .dark {
@@ -257,6 +257,71 @@
 
   .dark .video-overlay::after {
     background: hsl(var(--background) / 0.85);
+  }
+
+  /* ── Theme Toggle — premium pill switch ──────────── */
+  .theme-toggle-pill {
+    @apply relative flex items-center cursor-pointer p-0 border-0 bg-transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .theme-toggle-track {
+    @apply relative flex items-center rounded-full transition-all duration-500 ease-out;
+    width: 52px;
+    height: 28px;
+    padding: 2px;
+  }
+
+  .theme-toggle-track.is-light {
+    background: linear-gradient(135deg, #f59e0b, #fb923c);
+    box-shadow: 0 1px 3px rgb(245 158 11 / 0.3), inset 0 1px 1px rgb(255 255 255 / 0.15);
+  }
+
+  .theme-toggle-track.is-dark {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 1px 3px rgb(99 102 241 / 0.4), inset 0 1px 1px rgb(255 255 255 / 0.08);
+  }
+
+  .theme-toggle-thumb {
+    @apply relative flex items-center justify-center rounded-full bg-white;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s ease;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.15);
+  }
+
+  .is-dark .theme-toggle-thumb {
+    transform: translateX(24px);
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+  }
+
+  .theme-icon {
+    @apply absolute;
+    width: 14px;
+    height: 14px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .sun-icon { color: #f59e0b; }
+  .moon-icon { color: #6366f1; }
+
+  .visible-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .hidden-icon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  .theme-toggle-pill:hover .theme-toggle-thumb {
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+  }
+
+  .theme-toggle-pill:active .theme-toggle-track {
+    transform: scale(0.95);
   }
 }
 
