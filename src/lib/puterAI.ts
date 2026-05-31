@@ -4,19 +4,6 @@
  * Docs: https://docs.puter.com/AI/chat/
  */
 
-declare global {
-  interface Window {
-    puter: {
-      ai: {
-        chat: (
-          prompt: string,
-          options?: { model?: string; stream?: boolean }
-        ) => Promise<{ message: { content: string } } | string>;
-      };
-    };
-  }
-}
-
 export interface AnalysisData {
   summary: string;
   mermaid_code: string;

@@ -50,18 +50,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        navy: {
-          DEFAULT: "hsl(var(--navy))",
-        },
-        charcoal: {
-          DEFAULT: "hsl(var(--charcoal))",
-        },
-        slate: {
-          DEFAULT: "hsl(var(--slate))",
-        },
-        pearl: {
-          DEFAULT: "hsl(var(--pearl))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
