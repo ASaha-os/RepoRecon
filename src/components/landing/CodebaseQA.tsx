@@ -80,7 +80,7 @@ export const CodebaseQA = ({ repoUrl, analysisData }: CodebaseQAProps) => {
               )}
               <div className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                 msg.role === "user"
-                  ? "bg-primary text-white rounded-br-sm"
+                  ? "bg-primary text-primary-foreground rounded-br-sm"
                   : "bg-muted text-foreground rounded-bl-sm"
               }`}>
                 {msg.content}

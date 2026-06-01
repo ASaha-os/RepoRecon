@@ -81,7 +81,7 @@ const HelpView: React.FC = () => {
                 Contact
               </h3>
               <p style={{ fontSize: "var(--text-xs)", color: "var(--text-tertiary)" }}>
-                {CONTACT_EMAIL}
+                Send us a message and we'll reply as soon as possible.
               </p>
             </div>
           </div>
@@ -169,7 +169,7 @@ const HelpView: React.FC = () => {
                 padding: "10px 22px",
                 borderRadius: "var(--radius-md)",
                 background: sent ? "var(--bg-tertiary)" : "var(--accent)",
-                color: sent ? "var(--text-tertiary)" : "#09090b",
+                color: sent ? "var(--text-tertiary)" : "var(--accent-fg)",
                 border: "none",
                 fontSize: "var(--text-sm)",
                 fontWeight: 700,

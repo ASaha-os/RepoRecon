@@ -185,7 +185,7 @@ export const QAChat: React.FC<QAChatProps> = ({ repoUrl, analysisData }) => {
                     : "var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm)",
                   /* User bubble: solid accent background with dark text */
                   background: msg.role === "user" ? "var(--accent)" : "var(--bg-tertiary)",
-                  color: msg.role === "user" ? "#09090b" : "var(--text-primary)",
+                  color: msg.role === "user" ? "var(--accent-fg)" : "var(--text-primary)",
                   fontSize: "var(--text-sm)",
                   lineHeight: 1.65,
                   border: msg.role === "assistant" ? "1px solid var(--border-subtle)" : "none",
@@ -342,7 +342,7 @@ export const QAChat: React.FC<QAChatProps> = ({ repoUrl, analysisData }) => {
             width: 40, height: 40, borderRadius: "var(--radius-md)",
             background: loading || !input.trim() ? "var(--bg-tertiary)" : "var(--accent)",
             border: "1px solid var(--border)",
-            color: loading || !input.trim() ? "var(--text-tertiary)" : "#09090b",
+            color: loading || !input.trim() ? "var(--text-tertiary)" : "var(--accent-fg)",
             display: "flex", alignItems: "center", justifyContent: "center",
             cursor: loading || !input.trim() ? "not-allowed" : "pointer",
             flexShrink: 0,
