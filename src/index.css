@@ -106,9 +106,16 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 4.5rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
@@ -171,7 +178,9 @@
   .card-base {
     @apply rounded-2xl bg-card border border-border;
     box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    transition:
+      box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .card-base:hover {
@@ -205,6 +214,15 @@
     background: hsl(var(--navy) / 0.06);
     color: hsl(var(--navy));
     border-color: hsl(var(--navy) / 0.15);
+  }
+
+  /* ── In-page nav — smooth hover/focus ───────────── */
+  .nav-link-smooth {
+    @apply transition-colors duration-200 ease-out;
+  }
+
+  .section-anchor {
+    scroll-margin-top: 4.5rem;
   }
 
   /* ── Accordion feature rows ──────────────────────── */

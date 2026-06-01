@@ -29,14 +29,14 @@ const steps = [
 ];
 
 export const HowItWorks = () => (
-  <section id="how-it-works" className="relative py-28 px-5 sm:px-8 bg-card">
+  <section className="relative py-28 px-5 sm:px-8 bg-card">
     <div className="max-w-6xl mx-auto">
       <motion.div
         className="max-w-2xl mb-16"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
       >
         <p className="tag tag-navy mb-4">Process</p>
         <h2 className="heading-xl mb-4">
@@ -55,6 +55,7 @@ export const HowItWorks = () => (
             key={step.number}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -4, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.45, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="card-base p-6 h-full bg-background"
