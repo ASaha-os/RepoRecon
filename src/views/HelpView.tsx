@@ -1,10 +1,13 @@
 /**
- * HelpView — task 17 (spec §5.4)
- * FAQ accordion + contact form (mailto fallback).
+ * HelpView — FAQ accordion + contact form
+ * Fix: mailto points to asgcp2025@gmail.com
+ * Fix: Send icon visible, inputs have explicit text color
  */
 import React, { useState } from "react";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { Send } from "lucide-react";
+import { Send, Mail } from "lucide-react";
+
+const CONTACT_EMAIL = "asgcp2025@gmail.com";
 
 const HelpView: React.FC = () => {
   const [email,   setEmail]   = useState("");
@@ -14,10 +17,9 @@ const HelpView: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !message.trim()) return;
-    // mailto fallback — no backend required
     const subject = encodeURIComponent("RepoRecon Feedback");
     const body    = encodeURIComponent(`From: ${email}\n\n${message}`);
-    window.open(`mailto:support@reporecon.app?subject=${subject}&body=${body}`);
+    window.open(`mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`);
     setSent(true);
     setTimeout(() => { setSent(false); setEmail(""); setMessage(""); }, 3000);
   };
@@ -25,26 +27,18 @@ const HelpView: React.FC = () => {
   return (
     <div
       className="fade-in"
-      style={{
-        height: "100%",
-        overflowY: "auto",
-        background: "var(--bg-primary)",
-      }}
+      style={{ height: "100%", overflowY: "auto", background: "var(--bg-primary)" }}
     >
-      <div
-        style={{
-          maxWidth: 560,
-          margin: "0 auto",
-          padding: "32px 20px 64px",
-        }}
-      >
-        {/* FAQ */}
+      <div style={{ maxWidth: 580, margin: "0 auto", padding: "36px 24px 80px" }}>
+
+        {/* Title */}
         <h2
           style={{
-            fontSize: "var(--text-base)",
-            fontWeight: 600,
+            fontSize: "var(--text-lg)",
+            fontWeight: 700,
             color: "var(--text-primary)",
-            marginBottom: 24,
+            marginBottom: 28,
+            letterSpacing: "-0.02em",
           }}
         >
           Help &amp; FAQ
@@ -53,87 +47,167 @@ const HelpView: React.FC = () => {
         <FAQAccordion />
 
         {/* Divider */}
+        <div style={{ height: 1, background: "var(--border)", margin: "44px 0 36px" }} />
+
+        {/* Contact section */}
         <div
           style={{
-            height: 1,
-            background: "var(--border)",
-            margin: "40px 0 32px",
-          }}
-        />
-
-        {/* Contact */}
-        <h3
-          style={{
-            fontSize: "var(--text-sm)",
-            fontWeight: 600,
-            color: "var(--text-primary)",
-            marginBottom: 20,
+            background: "var(--bg-secondary)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-lg)",
+            padding: "28px 24px",
           }}
         >
-          Contact
-        </h3>
+          {/* Contact header */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <div
+              style={{
+                width: 36, height: 36, borderRadius: "var(--radius-md)",
+                background: "var(--accent-muted)", border: "1px solid var(--border)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              <Mail size={16} color="var(--accent)" />
+            </div>
+            <div>
+              <h3
+                style={{
+                  fontSize: "var(--text-sm)",
+                  fontWeight: 700,
+                  color: "var(--text-primary)",
+                  marginBottom: 2,
+                }}
+              >
+                Contact
+              </h3>
+              <p style={{ fontSize: "var(--text-xs)", color: "var(--text-tertiary)" }}>
+                {CONTACT_EMAIL}
+              </p>
+            </div>
+          </div>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <input
-            type="email"
-            placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={inputStyle}
-            onFocus={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; }}
-            onBlur={(e)  => { e.currentTarget.style.borderColor = "var(--border)"; }}
-          />
-          <textarea
-            placeholder="Your message…"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-            rows={4}
-            style={{ ...inputStyle, resize: "vertical", minHeight: 96 }}
-            onFocus={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; }}
-            onBlur={(e)  => { e.currentTarget.style.borderColor = "var(--border)"; }}
-          />
-          <button
-            type="submit"
-            disabled={sent}
-            style={{
-              alignSelf: "flex-start",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "8px 20px",
-              borderRadius: "var(--radius-md)",
-              background: sent ? "var(--bg-tertiary)" : "var(--accent)",
-              color: sent ? "var(--text-tertiary)" : "var(--bg-primary)",
-              border: "none",
-              fontSize: "var(--text-sm)",
-              fontWeight: 600,
-              cursor: sent ? "default" : "pointer",
-              fontFamily: "var(--font-ui)",
-              transition: "background var(--transition-fast)",
-            }}
-          >
-            <Send size={13} />
-            {sent ? "Sent!" : "Send"}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {/* Email input */}
+            <div>
+              <label
+                htmlFor="contact-email"
+                style={{
+                  display: "block",
+                  fontSize: "var(--text-xs)",
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
+                  marginBottom: 6,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                Your email
+              </label>
+              <input
+                id="contact-email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={inputStyle}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "var(--accent)";
+                  e.currentTarget.style.boxShadow = "var(--accent-glow)";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "var(--border)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              />
+            </div>
+
+            {/* Message textarea */}
+            <div>
+              <label
+                htmlFor="contact-message"
+                style={{
+                  display: "block",
+                  fontSize: "var(--text-xs)",
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
+                  marginBottom: 6,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                Message
+              </label>
+              <textarea
+                id="contact-message"
+                placeholder="Describe your issue or feedback…"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+                rows={5}
+                style={{ ...inputStyle, resize: "vertical", minHeight: 110 }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "var(--accent)";
+                  e.currentTarget.style.boxShadow = "var(--accent-glow)";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "var(--border)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              />
+            </div>
+
+            {/* Submit button */}
+            <button
+              type="submit"
+              disabled={sent}
+              style={{
+                alignSelf: "flex-start",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 22px",
+                borderRadius: "var(--radius-md)",
+                background: sent ? "var(--bg-tertiary)" : "var(--accent)",
+                color: sent ? "var(--text-tertiary)" : "#09090b",
+                border: "none",
+                fontSize: "var(--text-sm)",
+                fontWeight: 700,
+                cursor: sent ? "default" : "pointer",
+                fontFamily: "var(--font-ui)",
+                transition: "background var(--transition-fast), box-shadow var(--transition-fast)",
+                letterSpacing: "-0.01em",
+              }}
+              onMouseEnter={(e) => {
+                if (!sent) (e.currentTarget as HTMLButtonElement).style.boxShadow = "var(--accent-glow)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+              }}
+            >
+              <Send size={15} />
+              {sent ? "Opening mail client…" : "Send message"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
 
+/* Shared input style — explicit colors so they're always readable */
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "9px 12px",
+  padding: "10px 14px",
   borderRadius: "var(--radius-md)",
-  background: "var(--bg-secondary)",
-  border: "1px solid var(--border)",
+  background: "var(--bg-primary)",
+  border: "1.5px solid var(--border)",
   color: "var(--text-primary)",
+  caretColor: "var(--accent)",
   fontSize: "var(--text-sm)",
   fontFamily: "var(--font-ui)",
   outline: "none",
-  transition: "border-color var(--transition-fast)",
+  transition: "border-color var(--transition-fast), box-shadow var(--transition-fast)",
 };
 
 export default HelpView;
