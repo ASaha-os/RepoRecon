@@ -123,7 +123,7 @@ export const Header = () => {
               GitHub
             </a>
             <div className="pt-3">
-              <LaunchAppButton size="default" className="w-full [&_button]:w-full" />
+              <LaunchAppButton size="default" className="w-full [&_a]:w-full" />
             </div>
           </motion.div>
         )}

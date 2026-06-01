@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { openRepoReconApp } from "@/constants/links";
+import { REPO_RECON_APP_URL } from "@/constants/links";
 import { cn } from "@/lib/utils";
 
 type LaunchAppButtonProps = {
@@ -8,6 +8,10 @@ type LaunchAppButtonProps = {
   label?: string;
 };
 
+/**
+ * Native anchor navigation — works in production where window.open()
+ * is often blocked by popup blockers, in-app browsers, and strict CSP.
+ */
 export const LaunchAppButton = ({
   size = "default",
   className,
@@ -21,11 +25,12 @@ export const LaunchAppButton = ({
 
   return (
     <div className={cn("inline-flex", className)}>
-      <button
-        type="button"
-        onClick={openRepoReconApp}
+      <a
+        href={REPO_RECON_APP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
         className={cn(
-          "inline-flex items-center justify-center gap-2 font-semibold text-white bg-navy",
+          "inline-flex items-center justify-center gap-2 font-semibold text-white bg-navy no-underline",
           "shadow-md hover:bg-navy/90 transition-colors duration-200",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           isHero && "h-14 px-9 text-base sm:text-lg rounded-2xl",
@@ -35,7 +40,7 @@ export const LaunchAppButton = ({
       >
         <span>{text}</span>
         <ArrowUpRight className={cn("shrink-0 opacity-90", isHero ? "w-5 h-5" : "w-4 h-4")} />
-      </button>
+      </a>
     </div>
   );
 };
