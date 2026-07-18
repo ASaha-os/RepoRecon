@@ -14,7 +14,14 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Inter', 'Segoe UI', 'sans-serif'],
+        display: ['"Playfair Display"', "Georgia", "serif"],
+        serif: ['"Source Serif 4"', "Georgia", "serif"],
+        mono: ['"JetBrains Mono"', "monospace"],
+        sans: ['"Source Serif 4"', "Georgia", "serif"],
+      },
+      fontSize: {
+        "8xl": ["8rem", { lineHeight: "1" }],
+        "9xl": ["10rem", { lineHeight: "1" }],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -50,25 +57,18 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        navy: {
-          DEFAULT: "hsl(var(--navy))",
-        },
-        charcoal: {
-          DEFAULT: "hsl(var(--charcoal))",
-        },
-        slate: {
-          DEFAULT: "hsl(var(--slate))",
-        },
-        pearl: {
-          DEFAULT: "hsl(var(--pearl))",
-        },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-        "2xl": "1.5rem",
-        "3xl": "2rem",
+        // Override every radius to 0 — the monochrome system is sharp everywhere
+        DEFAULT: "0px",
+        none: "0px",
+        sm: "0px",
+        md: "0px",
+        lg: "0px",
+        xl: "0px",
+        "2xl": "0px",
+        "3xl": "0px",
+        full: "0px",
       },
       keyframes: {
         "accordion-down": {
@@ -79,25 +79,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(30px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        "fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        "scale-in": {
-          "0%": { opacity: "0", transform: "scale(0.95)" },
-          "100%": { opacity: "1", transform: "scale(1)" },
-        },
       },
       animation: {
-        "accordion-down": "accordion-down 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-        "accordion-up": "accordion-up 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-        "fade-up": "fade-up 0.7s ease-out forwards",
-        "fade-in": "fade-in 0.5s ease-out forwards",
-        "scale-in": "scale-in 0.45s ease-out forwards",
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },

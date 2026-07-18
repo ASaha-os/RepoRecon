@@ -6,22 +6,16 @@ type LaunchAppButtonProps = {
   size?: "hero" | "default" | "compact";
   className?: string;
   label?: string;
+  variant?: "primary" | "outline";
 };
 
-/**
- * Native anchor navigation — works in production where window.open()
- * is often blocked by popup blockers, in-app browsers, and strict CSP.
- */
 export const LaunchAppButton = ({
   size = "default",
   className,
   label,
+  variant = "primary",
 }: LaunchAppButtonProps) => {
-  const isHero = size === "hero";
-  const isCompact = size === "compact";
-
-  const text =
-    label ?? (isHero ? "Let's Try It — Launch App" : isCompact ? "Launch App" : "Launch the App");
+  const text = label ?? (size === "compact" ? "Launch" : "Analyze a repo");
 
   return (
     <div className={cn("inline-flex", className)}>
@@ -30,16 +24,18 @@ export const LaunchAppButton = ({
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          "inline-flex items-center justify-center gap-2 font-semibold text-white bg-navy no-underline",
-          "shadow-md hover:bg-navy/90 transition-colors duration-200",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          isHero && "h-14 px-9 text-base sm:text-lg rounded-2xl",
-          !isHero && !isCompact && "h-12 px-8 text-sm rounded-xl",
-          isCompact && "h-8 px-4 text-xs rounded-lg"
+          "mono-button",
+          size === "hero" && "mono-button--hero",
+          size === "compact" && "mono-button--compact",
+          variant === "outline" && "mono-button--outline"
         )}
       >
         <span>{text}</span>
-        <ArrowUpRight className={cn("shrink-0 opacity-90", isHero ? "w-5 h-5" : "w-4 h-4")} />
+        <ArrowUpRight
+          size={size === "hero" ? 18 : 14}
+          strokeWidth={1.5}
+          aria-hidden="true"
+        />
       </a>
     </div>
   );

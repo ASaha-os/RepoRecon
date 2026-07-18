@@ -1,78 +1,66 @@
 import { motion } from "framer-motion";
-import { Link, Brain, LayoutDashboard, Rocket } from "lucide-react";
+import { BrainCircuit, Github, Send } from "lucide-react";
 
 const steps = [
   {
     number: "01",
-    icon: Link,
-    title: "Paste a GitHub URL",
-    description: "Any public repository. No tokens, no OAuth, no setup — just the URL.",
+    icon: Github,
+    title: "Drop the URL",
+    text: "Start with the public repository. No installation, credentials, or project ceremony.",
   },
   {
     number: "02",
-    icon: Brain,
-    title: "AI processes the codebase",
-    description: "GPT-4o fetches the README and project structure, analyzing the full context in a single pass.",
+    icon: BrainCircuit,
+    title: "Read the Shape",
+    text: "RepoRecon connects the structure, documentation, and dependencies into working context.",
   },
   {
     number: "03",
-    icon: LayoutDashboard,
-    title: "Receive your dashboard",
-    description: "Health score, architecture diagram, detected issues, and prioritized recommendations — delivered instantly.",
-  },
-  {
-    number: "04",
-    icon: Rocket,
-    title: "Share or export",
-    description: "Copy a shareable link, download a PNG scorecard, or export a comprehensive PDF report.",
+    icon: Send,
+    title: "Make the Move",
+    text: "Use the signal to orient a team, plan a change, or begin a focused review.",
   },
 ];
 
 export const HowItWorks = () => (
-  <section className="relative py-28 px-5 sm:px-8 bg-card">
-    <div className="max-w-6xl mx-auto">
-      <motion.div
-        className="max-w-2xl mb-16"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <p className="tag tag-navy mb-4">Process</p>
-        <h2 className="heading-xl mb-4">
-          From URL to insight
-          <br />
-          <span className="accent-navy">in four steps.</span>
+  <section
+    className="mono-workflow section-anchor"
+    id="how-it-works"
+    aria-labelledby="workflow-heading"
+  >
+    <div className="mono-workflow-inner">
+      <header className="mono-section-header">
+        <span className="mono-section-eyebrow">Workflow / fast by design</span>
+        <h2 id="workflow-heading" className="mono-section-title">
+          From URL<br /><em>to useful.</em>
         </h2>
-        <p className="body-lg">
-          No configuration. No sign-up. Paste and go.
-        </p>
-      </motion.div>
+      </header>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="mono-workflow-grid" role="list">
         {steps.map((step, i) => (
-          <motion.div
+          <motion.article
             key={step.number}
+            role="listitem"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -4, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="card-base p-6 h-full bg-background"
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.35, delay: i * 0.07, ease: "easeOut" }}
+            className="mono-workflow-card"
           >
-            <span className="text-xs font-bold tracking-widest accent-navy mb-4 block">
+            {/* Background number */}
+            <div className="mono-workflow-bg-num" aria-hidden="true">
               {step.number}
-            </span>
-            <div className="w-10 h-10 rounded-xl border border-border bg-muted flex items-center justify-center mb-4">
-              <step.icon className="w-5 h-5 text-foreground/70" />
             </div>
-            <h3 className="text-[15px] font-semibold text-foreground mb-2 tracking-tight">
-              {step.title}
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {step.description}
-            </p>
-          </motion.div>
+
+            <span className="mono-workflow-step">{step.number}</span>
+
+            <div className="mono-workflow-icon">
+              <step.icon size={26} strokeWidth={1.5} aria-hidden="true" />
+            </div>
+
+            <h3 className="mono-workflow-title">{step.title}</h3>
+            <p className="mono-workflow-desc">{step.text}</p>
+          </motion.article>
         ))}
       </div>
     </div>
