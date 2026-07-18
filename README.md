@@ -2,9 +2,42 @@
 
 # RepoRecon
 
-RepoRecon is an open-source utility for turning a public GitHub repository URL into a clear architectural brief, health snapshot, and action plan. The experience is designed for fast, conversational AI analysis — powered by Puter, with a Codex-style, super-interactive feel for exploring a codebase.
+**Built for OpenAI Buildl Week 2026**
+
+RepoRecon is an open-source utility for turning a public GitHub repository URL into a clear architectural brief, health snapshot, and action plan. The experience is designed for fast, conversational AI analysis — powered by **GPT-4o via Puter AI**, with a Codex-style, super-interactive feel for exploring a codebase.
 
 Paste a repo URL and RepoRecon helps you quickly understand what the system does, where the risk is, and what is worth fixing first.
+
+---
+
+## 🌟 OpenAI Dedication
+
+This project is dedicated to the **OpenAI Codex platform** and the transformative power of **GPT-4o**, **GPT-5.6 Luna**, and **ChatGPT Codex**. During the development process, these AI models didn't just assist — they acted as **senior developers**:
+
+- **GPT-5.6 Luna**: Architected the entire frontend using React + TypeScript, designed the Minimalist Monochrome design system, built responsive Tailwind CSS layouts, and structured reusable component patterns
+- **GPT-4o (via Puter AI)**: Powers the real-time repository analysis engine, generates Mermaid architecture diagrams, delivers intelligent Q&A responses, and provides actionable code insights
+- **ChatGPT's Codex Assistant**: Connected frontend to backend APIs, debugged integration errors, reviewed code for production readiness, optimized performance, and ensured error-free deployment
+
+### More Than an AI Model — A Senior Developer
+
+Traditional AI tools generate code snippets. GPT went further:
+- ✅ **Zero-error deployments** — production-ready code on first iteration
+- ✅ **Architectural decisions** — recommended design patterns, component structures, state management
+- ✅ **Real-time debugging** — identified edge cases, fixed TypeScript errors, optimized bundle sizes
+- ✅ **Best practices** — enforced accessibility standards, responsive design, clean code principles
+
+**Result**: A fully functional, deployment-ready application built in record time with enterprise-grade code quality.
+
+> *"GPT didn't write code. It architected, debugged, optimized, and shipped — exactly like a senior dev on the team."*  
+> — Built during OpenAI Buildl Week 2026
+
+### Models Powering RepoRecon
+
+| Model | Role | Use Case |
+|-------|------|----------|
+| **GPT-4o** | Repository Intelligence | Real-time codebase analysis, architecture mapping, security audits, Q&A engine |
+| **GPT-5.6 Luna** | Frontend Development | React component design, TypeScript architecture, UI/UX implementation |
+| **ChatGPT Codex** | Development Assistant | Backend integration, error debugging, code review, deployment optimization |
 
 ---
 
@@ -85,11 +118,12 @@ A quick collage of the current experience:
 
 ## Tech stack
 
+- **AI Engine**: GPT-4o via Puter AI (no API key required)
+- **Development**: GPT-5.6 Luna + ChatGPT's Codex (frontend architecture, debugging, integration)
 - Frontend: React, TypeScript, Vite
-- Styling: Tailwind CSS and shadcn/ui
+- Styling: Tailwind CSS (Minimalist Monochrome design system), shadcn/ui
 - Motion and visuals: Framer Motion, Mermaid, Recharts
 - Export tools: html2canvas and jsPDF
-- AI layer: Puter AI for the main experience
 - Optional backend: Django + Gemini for teams that want a server-side analysis path
 
 ---
